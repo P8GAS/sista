@@ -1,35 +1,87 @@
-<a routerLink="/" class="back-link">← Back to users</a>
+<a routerLink="/">← Back to users</a>
 
 @if (isLoading) {
   <p>Loading user...</p>
 } @else if (errorMessage) {
   <p class="error">{{ errorMessage }}</p>
 } @else if (user) {
-  <section class="user-detail">
-    @if (user.avatar) {
-      <img
-        class="avatar"
-        [src]="user.avatar"
-        [alt]="'Avatar of ' + user.name"
+  <section class="user-header">
+    <h1>{{ user.name }}</h1>
+    <p>Gender: {{ user.gender }}</p>
+  </section>
+
+  <section class="gift-form-section">
+    <h2>Add a gift</h2>
+
+    <form (ngSubmit)="addGift()">
+      <label for="gift-name">Name *</label>
+      <input
+        id="gift-name"
+        type="text"
+        name="name"
+        [(ngModel)]="newGift.name"
+        required
       />
-    } @else {
-      <div class="avatar-placeholder">
-        {{ user.name.charAt(0).toUpperCase() }}
-      </div>
+
+      <label for="gift-brand">Brand</label>
+      <input
+        id="gift-brand"
+        type="text"
+        name="brand"
+        [(ngModel)]="newGift.brand"
+      />
+
+      <label for="gift-price">Price</label>
+      <input
+        id="gift-price"
+        type="number"
+        name="price"
+        min="0"
+        step="0.01"
+        [(ngModel)]="newGift.price"
+      />
+
+      <label for="gift-url">Product URL</label>
+      <input
+        id="gift-url"
+        type="url"
+        name="url"
+        [(ngModel)]="newGift.url"
+        placeholder="https://example.com/product"
+      />
+
+      <label for="gift-photo">Photo URL</label>
+      <input
+        id="gift-photo"
+        type="url"
+        name="photo"
+        [(ngModel)]="newGift.photo"
+        placeholder="https://example.com/photo.jpg"
+      />
+
+      <button type="submit" [disabled]="isSubmittingGift">
+        {{ isSubmittingGift ? 'Adding...' : 'Add gift' }}
+      </button>
+    </form>
+
+    @if (giftsErrorMessage) {
+      <p class="error">{{ giftsErrorMessage }}</p>
     }
 
-    <div>
-      <h1>{{ user.name }}</h1>
-      <p><strong>Gender:</strong> {{ user.gender }}</p>
-    </div>
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
   </section>
-}
 
-@if (giftErrorMessage) {
-  <p class="error">{{ giftErrorMessage }}</p>
-}
-@else {
-  @for (gift of gifts; track gift.id) {
-    <app-gift-card [gift]="gift"></app-gift-card>
-  }
+  <section class="gifts-section">
+    <h2>Gifts</h2>
+
+    @if (gifts.length === 0) {
+      <p>No gifts for this user yet.</p>
+    } @else {
+      @for (gift of gifts; track gift.id) {
+        <app-gift-card [gift]="gift"></app-gift-card>
+      }
+    }
+  </section>
 }

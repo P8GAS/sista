@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Gift} from '../models/gift.model';
+import {Gift, CreateGift} from '../models/gift.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,5 +13,9 @@ export class GiftService {
 
   getGiftsByUserId(id: string): Observable<Gift[]> {
     return this.http.get<Gift[]>(`${this.apiUrl}/${id}/gifts`);
+  }
+
+  createGift(userId: string,  gift: CreateGift): Observable<Gift> {
+    return this.http.post<Gift>(`${this.apiUrl}/${userId}/gifts`, gift);
   }
 }

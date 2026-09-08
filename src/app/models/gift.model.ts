@@ -1,9 +1,17 @@
 export interface Gift {
-  id: number,
-  name: string,
-  brand: string,
-  price: number,
-  url: string,
-  photo: string,
-  userId: number
+  id: number;
+  name: string;
+  brand: string;
+  price: number;
+  url: string;
+  photo: string | null;
+  userId: number;
+}
+
+export interface CreateGift {
+  name: string;
+  brand: string | null;
+  price: number | null;
+  url: string | null;
+  photo: string | null;
 }

@@ -165,6 +165,54 @@ app.get('/api/users/:userId/gifts', async (req, res) => {
   }
 });
 
+app.post('/api/users/:userId/gifts', async (req, res) => {
+  const { userId } = req.params;
+  const { name, brand, price, url, photo } = req.body;
+
+  if (!name || !name.trim() || !brand || !price || !url) {
+    return res.status(400).json({
+      message: 'You are missing required fields.'
+    });
+  }
+
+  try {
+    const userResult = await pool.query(
+      'SELECT id FROM users WHERE id = $1',
+      [userId]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({
+        message: 'User not found.'
+      });
+    }
+
+    const result = await pool.query(
+      `
+        INSERT INTO gifts (name, brand, price, url, photo, user_id)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id, name, brand, price, url, photo, user_id
+      `,
+      [
+        name.trim(),
+        brand?.trim() || null,
+        price || null,
+        url?.trim() || null,
+        photo?.trim() || null,
+        userId
+      ]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: 'Unable to create gift.'
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`API disponible sur http://localhost:${port}`);
 });
