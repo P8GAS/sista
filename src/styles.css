@@ -1,1 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+  background-image: url("/bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat;
+}

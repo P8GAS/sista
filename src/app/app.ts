@@ -1,29 +1,17 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from './services/user.service';
-import { User } from './models/user.model';
+import { FormsModule } from '@angular/forms';
+
+import {UserCardComponent} from './pages/home-page/components/user-card/user-card.component';
+
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, UserCardComponent, RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App implements OnInit {
-  private readonly userService = inject(UserService);
+export class App {
 
-  users: User[] = [];
-  errorMessage = '';
-
-  ngOnInit(): void {
-    this.userService.getUsers().subscribe({
-      next: (users) => {
-        this.users = users;
-      },
-      error: (error) => {
-        console.error(error);
-        this.errorMessage = 'Cannot get users.';
-      }
-    });
-  }
 }

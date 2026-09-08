@@ -1,0 +1,18 @@
+<div class="user-card" [routerLink]="['/users', user().id]">
+  @if (user().avatar) {
+    <img
+      [src]="user().avatar"
+      [alt]="'Avatar of ' + user().name"
+      class="avatar"
+    />
+  } @else {
+    <div class="avatar-placeholder">
+      {{ user().name.charAt(0).toUpperCase() }}
+    </div>
+  }
+
+  <div>
+    <h2>{{ user().name }}</h2>
+    <p>Gender: {{ user().gender }}</p>
+  </div>
+</div>

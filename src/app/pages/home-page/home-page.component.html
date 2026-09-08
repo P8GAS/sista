@@ -1,0 +1,54 @@
+<section class="page">
+  @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+  }
+
+  @if (users.length === 0 && !errorMessage) {
+    <p>No users found.</p>
+  }
+
+  <section class="form-section">
+    <form (ngSubmit)="addUser()">
+      <label for="name">Name *</label>
+      <input
+        id="name"
+        type="text"
+        name="name"
+        [(ngModel)]="newUser.name"
+        required
+      />
+
+      <label for="gender">Gender *</label>
+      <select
+        id="gender"
+        name="gender"
+        [(ngModel)]="newUser.gender"
+        required
+      >
+        <option value="" disabled>Select a gender</option>
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="avatar">Avatar URL (optional)</label>
+      <input
+        id="avatar"
+        type="url"
+        name="avatar"
+        [(ngModel)]="newUser.avatar"
+        placeholder="https://example.com/avatar.jpg"
+      />
+
+      <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Adding...' : 'Add user' }}
+      </button>
+    </form>
+  </section>
+
+  <section class="user-list">
+    @for (user of users; track user.id) {
+      <app-user-card [user]="user"></app-user-card>
+    }
+  </section>
+</section>

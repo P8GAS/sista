@@ -1,0 +1,15 @@
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+.user-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.error {
+  color: #b00020;
+}

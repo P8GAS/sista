@@ -1,0 +1,38 @@
+.back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+.user-detail {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 600px;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.avatar,
+.avatar-placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.avatar {
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e5e5e5;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.error {
+  color: #b00020;
+}

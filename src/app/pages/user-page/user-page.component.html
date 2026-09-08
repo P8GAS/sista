@@ -1,0 +1,35 @@
+<a routerLink="/" class="back-link">← Back to users</a>
+
+@if (isLoading) {
+  <p>Loading user...</p>
+} @else if (errorMessage) {
+  <p class="error">{{ errorMessage }}</p>
+} @else if (user) {
+  <section class="user-detail">
+    @if (user.avatar) {
+      <img
+        class="avatar"
+        [src]="user.avatar"
+        [alt]="'Avatar of ' + user.name"
+      />
+    } @else {
+      <div class="avatar-placeholder">
+        {{ user.name.charAt(0).toUpperCase() }}
+      </div>
+    }
+
+    <div>
+      <h1>{{ user.name }}</h1>
+      <p><strong>Gender:</strong> {{ user.gender }}</p>
+    </div>
+  </section>
+}
+
+@if (giftErrorMessage) {
+  <p class="error">{{ giftErrorMessage }}</p>
+}
+@else {
+  @for (gift of gifts; track gift.id) {
+    <app-gift-card [gift]="gift"></app-gift-card>
+  }
+}

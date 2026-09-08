@@ -7,24 +7,16 @@ const pool = require('./database');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Autorise votre projet Angular, lancé habituellement sur le port 4200.
 app.use(cors({
   origin: 'http://localhost:4200'
 }));
 
-// Permet de lire les données JSON envoyées par Angular.
 app.use(express.json());
 
-/**
- * Vérifier que l'API fonctionne.
- */
 app.get('/api/health', (req, res) => {
   res.json({ message: 'API gifts opérationnelle.' });
 });
 
-/**
- * Obtenir tous les utilisateurs.
- */
 app.get('/api/users', async (req, res) => {
   try {
     const result = await pool.query(`
@@ -42,15 +34,12 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
-/**
- * Créer un utilisateur.
- */
 app.post('/api/users', async (req, res) => {
   const { name, avatar, gender } = req.body;
 
   if (!name || !gender) {
     return res.status(400).json({
-      message: 'Les champs name et gender sont obligatoires.'
+      message: 'Name and gender are required.'
     });
   }
 
@@ -59,7 +48,7 @@ app.post('/api/users', async (req, res) => {
       `
         INSERT INTO users (name, avatar, gender)
         VALUES ($1, $2, $3)
-        RETURNING id, name, avatar, gender
+          RETURNING id, name, avatar, gender
       `,
       [name, avatar || null, gender]
     );
@@ -67,15 +56,42 @@ app.post('/api/users', async (req, res) => {
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
-      message: 'Erreur lors de la création de l’utilisateur.'
+      message: 'Unable to create the user.'
     });
   }
 });
 
-/**
- * Obtenir tous les cadeaux, avec leur utilisateur et leurs catégories.
- */
+app.get('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `
+        SELECT id, name, avatar, gender
+        FROM users
+        WHERE id = $1
+      `,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: 'User not found.'
+      });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: 'Unable to retrieve the user.'
+    });
+  }
+});
+
 app.get('/api/gifts', async (req, res) => {
   try {
     const result = await pool.query(`
@@ -111,9 +127,6 @@ app.get('/api/gifts', async (req, res) => {
   }
 });
 
-/**
- * Obtenir les cadeaux d'un utilisateur précis.
- */
 app.get('/api/users/:userId/gifts', async (req, res) => {
   const { userId } = req.params;
 

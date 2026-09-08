@@ -1,0 +1,18 @@
+<div class="gift-card">
+  @if (gift().photo) {
+    <img
+      [src]="gift().photo"
+      [alt]="'Photo of ' + gift().name"
+      class="photo"
+    />
+  } @else {
+    <div class="avatar-placeholder">
+      {{ gift().name.charAt(0).toUpperCase() }}
+    </div>
+  }
+
+  <div>
+    <h2>{{ gift().name }}</h2>
+    <p>Gender: {{ gift().brand }}</p>
+  </div>
+</div>
