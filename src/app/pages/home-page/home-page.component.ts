@@ -26,10 +26,18 @@ export class HomePageComponent implements OnInit {
     password: ''
   };
 
+  loginData = {
+    name: '',
+    surname: '',
+    password: ''
+  };
+
+  loginErrorMessage = '';
   errorMessage = '';
   successMessage = '';
   isSubmitting = false;
   isUserModalOpen = false;
+  isLoginModalOpen = false;
 
   ngOnInit(): void {
     this.loadUsers();
@@ -53,6 +61,14 @@ export class HomePageComponent implements OnInit {
 
   closeUserModal(): void {
     this.isUserModalOpen = false;
+  }
+
+  openLoginModal(): void {
+    this.isLoginModalOpen = true;
+  }
+
+  closeLoginModal(): void {
+    this.isLoginModalOpen = false;
   }
 
   addUser(): void {
@@ -93,4 +109,29 @@ export class HomePageComponent implements OnInit {
       }
     });
   }
+
+  onLogin(): void {
+    this.loginErrorMessage = '';
+
+    this.userService.login(this.loginData).subscribe({
+      next: (response) => {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem(
+          'connectedUser',
+          JSON.stringify(response.user)
+        );
+
+        console.log('Connected user:', response.user);
+
+        this.closeLoginModal()
+      },
+      error: (error) => {
+        console.error('Login error:', error);
+
+        this.loginErrorMessage =
+          error.error?.message ?? 'Unable to log in.';
+      }
+    });
+  }
+
 }

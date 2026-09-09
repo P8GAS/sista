@@ -1,5 +1,5 @@
-import {Component, input} from '@angular/core';
-import {Gift} from '../../../../models/gift.model';
+import { Component, input, output } from '@angular/core';
+import { Gift } from '../../../../models/gift.model';
 
 @Component({
   selector: 'app-gift-card',
@@ -9,4 +9,7 @@ import {Gift} from '../../../../models/gift.model';
 })
 export class GiftCardComponent {
   gift = input.required<Gift>();
+  expanded = input(false);
+  showImage = input(true);
+  toggleExpanded = output<void>();
 }

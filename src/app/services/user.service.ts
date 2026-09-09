@@ -3,6 +3,24 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {CreateUserPayload, User} from '../models/user.model';
 
+export interface LoginData {
+  name: string;
+  surname: string;
+  password: string;
+}
+
+export interface ConnectedUser {
+  id: number;
+  name: string;
+  surname: string;
+  avatar: string | null;
+}
+
+export interface LoginResponse {
+  token: string;
+  user: ConnectedUser;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,5 +39,12 @@ export class UserService {
 
   getUserById(id: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
+  }
+
+  login(data: LoginData): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(
+      `http://localhost:3000/api/login`,
+      data
+    );
   }
 }

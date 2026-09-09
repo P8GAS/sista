@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, RouterLink} from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {User} from '../../models/user.model';
@@ -17,13 +17,18 @@ import {FormsModule} from '@angular/forms';
   templateUrl: './user-page.component.html',
   styleUrl: './user-page.component.css',
 })
-export class UserPageComponent implements OnInit {
+export class UserPageComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly userService = inject(UserService);
   private readonly giftService = inject(GiftService);
 
   user: User | null = null;
   gifts: Gift[] = [];
+
+  expandedGiftId: number | null = null;
+  transitioningGiftIds = new Set<number>();
+
+  private giftTransitionTimer?: ReturnType<typeof setTimeout>;
 
   newGift = {
     name: '',
@@ -38,6 +43,7 @@ export class UserPageComponent implements OnInit {
   successMessage = '';
   isLoading = true;
   isSubmittingGift = false;
+  isGiftModalOpen = false;
 
   private userId = '';
 
@@ -73,6 +79,12 @@ export class UserPageComponent implements OnInit {
         this.giftsErrorMessage = 'Unable to retrieve gifts.';
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.giftTransitionTimer) {
+      clearTimeout(this.giftTransitionTimer);
+    }
   }
 
   addGift(): void {
@@ -114,4 +126,60 @@ export class UserPageComponent implements OnInit {
       }
     });
   }
+
+  openGiftModal(): void {
+    this.isGiftModalOpen = true;
+  }
+
+  closeGiftModal(): void {
+    this.isGiftModalOpen = false;
+  }
+
+  toggleGift(giftId: number): void {
+    const previousGiftId = this.expandedGiftId;
+
+    /*
+     * La carte cliquée va soit s'agrandir, soit se refermer.
+     * L'ancienne carte ouverte va se refermer si une autre est sélectionnée.
+     */
+    const idsToHide = new Set<number>(this.transitioningGiftIds);
+
+    idsToHide.add(giftId);
+
+    if (previousGiftId !== null) {
+      idsToHide.add(previousGiftId);
+    }
+
+    this.transitioningGiftIds = idsToHide;
+
+    this.expandedGiftId =
+      this.expandedGiftId === giftId ? null : giftId;
+  }
+
+  onGiftTransitionEnd(event: TransitionEvent, giftId: number): void {
+    /*
+     * transitionend remonte depuis les enfants :
+     * on garde uniquement l'événement provenant directement
+     * de .gift-grid-item.
+     */
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    /*
+     * La largeur est animée via flex-basis et max-width.
+     * Un seul des deux événements suffit.
+     */
+    if (event.propertyName !== 'flex-basis') {
+      return;
+    }
+
+    const updatedIds = new Set(this.transitioningGiftIds);
+
+    updatedIds.delete(giftId);
+
+    this.transitioningGiftIds = updatedIds;
+  }
+
+
 }

@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const pool = require('./database');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -233,4 +234,75 @@ app.post('/api/users/:userId/gifts', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`API available on http://localhost:${port}`);
+});
+
+app.post('/api/login', async (req, res) => {
+  try {
+    const { name, surname, password } = req.body;
+
+    const cleanName = name?.trim();
+    const cleanSurname = surname?.trim();
+
+    if (!cleanName || !cleanSurname || !password) {
+      return res.status(400).json({
+        message: 'Name, surname and password are required.'
+      });
+    }
+
+    const result = await pool.query(
+      `
+        SELECT id, name, surname, avatar, password_hash
+        FROM users
+        WHERE name = $1 AND surname = $2
+      `,
+      [cleanName, cleanSurname]
+    );
+
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(401).json({
+        message: 'Invalid credentials.'
+      });
+    }
+
+    const passwordIsValid = await bcrypt.compare(
+      password,
+      user.password_hash
+    );
+
+    if (!passwordIsValid) {
+      return res.status(401).json({
+        message: 'Invalid credentials.'
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        name: user.name,
+        surname: user.surname
+      },
+      process.env.JWT,
+      {
+        expiresIn: '2h'
+      }
+    );
+
+    return res.json({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        surname: user.surname,
+        avatar: user.avatar
+      }
+    });
+  } catch (error) {
+    console.error('Unable to log in:', error);
+
+    return res.status(500).json({
+      message: 'Unable to log in.'
+    });
+  }
 });

@@ -2,3 +2,19 @@
   opacity: 0.35;
   background-color: #26262c;
 }
+
+.bottom-actions {
+  height: 4.5rem;
+}
+
+.bottom-actions__center {
+  width: 6.5rem;
+  aspect-ratio: 1;
+  padding: 0.7rem;
+  z-index: 1;
+  box-shadow: none;
+}
+
+.bottom-actions__center i {
+  font-size: 2.5rem;
+}
