@@ -6,15 +6,13 @@ import {GiftService} from '../../services/gift.service';
 import {Gift} from '../../models/gift.model';
 import {GiftCardComponent} from './components/gift-card.component/gift-card.component';
 import {FormsModule} from '@angular/forms';
-import {UserCardComponent} from '../home-page/components/user-card/user-card.component';
 
 @Component({
   selector: 'app-user-page',
   imports: [
     RouterLink,
     GiftCardComponent,
-    FormsModule,
-    UserCardComponent
+    FormsModule
   ],
   templateUrl: './user-page.component.html',
   styleUrl: './user-page.component.css',

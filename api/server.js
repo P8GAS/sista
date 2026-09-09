@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const pool = require('./database');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,13 +15,13 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
-  res.json({ message: 'API gifts opérationnelle.' });
+  res.json({ message: 'API gifts available.' });
 });
 
 app.get('/api/users', async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT id, name, avatar, gender
+      SELECT id, name, surname, avatar
       FROM users
       ORDER BY id
     `);
@@ -29,38 +30,90 @@ app.get('/api/users', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: 'Erreur lors de la récupération des utilisateurs.'
+      message: 'Error while getting users.'
     });
   }
 });
 
 app.post('/api/users', async (req, res) => {
-  const { name, avatar, gender } = req.body;
-
-  if (!name || !gender) {
-    return res.status(400).json({
-      message: 'Name and gender are required.'
-    });
-  }
-
   try {
-    const result = await pool.query(
+
+    const { name, surname, avatar, password } = req.body;
+
+    const cleanName = name?.trim();
+    const cleanSurname = surname?.trim();
+
+    if (!cleanName || !cleanSurname || !password) {
+      return res.status(400).json({
+        message: 'Name, surname and password are required.'
+      });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: 'The password must contain at least 8 characters.'
+      });
+    }
+
+    const existingUser = await pool.query(
       `
-        INSERT INTO users (name, avatar, gender)
-        VALUES ($1, $2, $3)
-          RETURNING id, name, avatar, gender
-      `,
-      [name, avatar || null, gender]
+          SELECT id
+          FROM users
+          WHERE name = $1 AND surname = $2
+        `,
+      [cleanName, cleanSurname]
     );
 
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    console.error(error);
+    if (existingUser.rows.length > 0) {
+      return res.status(409).json({
+        message: 'An account already exists with this name and surname.'
+      });
+    }
 
-    res.status(500).json({
-      message: 'Unable to create the user.'
-    });
-  }
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    const result = await pool.query(
+      `
+          INSERT INTO users (
+            name,
+            surname,
+            avatar,
+            password_hash
+          )
+          VALUES ($1, $2, $3, $4)
+        `,
+      [
+        cleanName,
+        cleanSurname,
+        avatar?.trim() || null,
+        passwordHash
+      ]
+    );
+
+    const createdUser = await pool.query(
+      `
+          SELECT
+            id,
+            name,
+            surname,
+            avatar
+          FROM users
+          WHERE id = $1
+        `,
+      [result.lastID]
+    );
+
+    return res.status(201).json(createdUser);
+  } catch (error) {
+    console.error('Unable to create user - full error:', error);
+    console.error('PostgreSQL message:', error.message);
+    console.error('PostgreSQL code:', error.code);
+    console.error('PostgreSQL detail:', error.detail);
+
+  return res.status(500).json({
+    message: 'Unable to create the user.'
+  });
+}
 });
 
 app.get('/api/users/:id', async (req, res) => {
@@ -69,7 +122,7 @@ app.get('/api/users/:id', async (req, res) => {
   try {
     const result = await pool.query(
       `
-        SELECT id, name, avatar, gender
+        SELECT id, name, surname, avatar
         FROM users
         WHERE id = $1
       `,
@@ -88,41 +141,6 @@ app.get('/api/users/:id', async (req, res) => {
 
     res.status(500).json({
       message: 'Unable to retrieve the user.'
-    });
-  }
-});
-
-app.get('/api/gifts', async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT
-        g.id,
-        g.name,
-        g.brand,
-        g.price,
-        g.url,
-        g.photo,
-        g.user_id,
-        u.name AS user_name,
-        COALESCE(
-          json_agg(
-            json_build_object('id', c.id, 'name', c.name)
-          ) FILTER (WHERE c.id IS NOT NULL),
-          '[]'
-        ) AS categories
-      FROM gifts g
-      JOIN users u ON u.id = g.user_id
-      LEFT JOIN gift_categories gc ON gc.gift_id = g.id
-      LEFT JOIN categories c ON c.id = gc.category_id
-      GROUP BY g.id, u.id
-      ORDER BY g.id
-    `);
-
-    res.json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: 'Erreur lors de la récupération des cadeaux.'
     });
   }
 });
@@ -160,7 +178,7 @@ app.get('/api/users/:userId/gifts', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: 'Erreur lors de la récupération des cadeaux utilisateur.'
+      message: 'Error while getting gifts.'
     });
   }
 });
@@ -214,5 +232,5 @@ app.post('/api/users/:userId/gifts', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`API disponible sur http://localhost:${port}`);
+  console.log(`API available on http://localhost:${port}`);
 });

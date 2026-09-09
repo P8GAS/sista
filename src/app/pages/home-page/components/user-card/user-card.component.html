@@ -1,18 +1,30 @@
-<div class="user-card" [routerLink]="['/users', user().id]">
-  @if (user().avatar) {
-    <img
-      [src]="user().avatar"
-      [alt]="'Avatar of ' + user().name"
-      class="avatar"
-    />
-  } @else {
-    <div class="avatar-placeholder">
-      {{ user().name.charAt(0).toUpperCase() }}
-    </div>
-  }
+<div
+  class="card glassy rounded-2 text-center h-100"
+  [routerLink]="['/users', user().id]"
+  role="button"
+>
+  <div class="card-body d-flex flex-column align-items-center p-4">
+    @if (user().avatar) {
+      <img
+        [src]="user().avatar"
+        [alt]="'Avatar of ' + user().name"
+        class="user-avatar rounded-3 object-fit-cover mb-3"
+      />
+    } @else {
+      <div class="user-avatar rounded-3 bg-light d-flex align-items-center justify-content-center mb-3">
+        <span class="display-5 text-secondary">
+          {{ user().name.charAt(0).toUpperCase() }}
+        </span>
+      </div>
+    }
 
-  <div>
-    <h2>{{ user().name }}</h2>
-    <p>Gender: {{ user().gender }}</p>
+    <h2 class="h5 fw-bold mb-1">
+       {{ user().name }}
+    </h2>
+
+    <p class="fst-italic mb-0">
+      {{ user().surname }}
+    </p>
+
   </div>
 </div>

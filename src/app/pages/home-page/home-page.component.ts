@@ -1,16 +1,14 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {RouterOutlet} from '@angular/router';
 import {UserCardComponent} from './components/user-card/user-card.component';
 import {UserService} from '../../services/user.service';
-import {User} from '../../models/user.model';
+import {CreateUserPayload, User} from '../../models/user.model';
 
 @Component({
   selector: 'app-home-page',
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    RouterOutlet,
     UserCardComponent
   ],
   templateUrl: './home-page.component.html',
@@ -21,15 +19,17 @@ export class HomePageComponent implements OnInit {
 
   users: User[] = [];
 
-  newUser = {
+  newUser: CreateUserPayload = {
     name: '',
+    surname: '',
     avatar: '',
-    gender: ''
+    password: ''
   };
 
   errorMessage = '';
   successMessage = '';
   isSubmitting = false;
+  isUserModalOpen = false;
 
   ngOnInit(): void {
     this.loadUsers();
@@ -47,11 +47,19 @@ export class HomePageComponent implements OnInit {
     });
   }
 
+  openUserModal(): void {
+    this.isUserModalOpen = true;
+  }
+
+  closeUserModal(): void {
+    this.isUserModalOpen = false;
+  }
+
   addUser(): void {
     this.errorMessage = '';
     this.successMessage = '';
 
-    if (!this.newUser.name.trim() || !this.newUser.gender) {
+    if (!this.newUser.name.trim() || !this.newUser.surname.trim() || !this.newUser.password) {
       this.errorMessage = 'Name and gender are required';
       return;
     }
@@ -60,20 +68,23 @@ export class HomePageComponent implements OnInit {
 
     this.userService.createUser({
       name: this.newUser.name.trim(),
-      avatar: this.newUser.avatar.trim() || null,
-      gender: this.newUser.gender
+      surname: this.newUser.surname.trim(),
+      avatar: this.newUser.avatar?.trim() || null,
+      password: this.newUser.password,
     }).subscribe({
-      next: (createdUser) => {
-        this.users.push(createdUser);
+      next: () => {
+        this.loadUsers()
 
         this.newUser = {
           name: '',
+          surname: '',
           avatar: '',
-          gender: ''
+          password: ''
         };
 
         this.successMessage = 'User added.';
         this.isSubmitting = false;
+        this.closeUserModal()
       },
       error: (error) => {
         console.error(error);
