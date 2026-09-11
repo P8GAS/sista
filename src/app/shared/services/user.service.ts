@@ -37,6 +37,10 @@ export class UserService {
     return this.http.post<User>(this.apiUrl, payload);
   }
 
+  updateUser(id: string, payload: CreateUserPayload): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/${id}`, payload);
+  }
+
   getUserById(id: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
   }

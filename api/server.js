@@ -106,15 +106,103 @@ app.post('/api/users', async (req, res) => {
 
     return res.status(201).json(createdUser);
   } catch (error) {
-    console.error('Unable to create user - full error:', error);
+      console.error('Unable to create user - full error:', error);
+      console.error('PostgreSQL message:', error.message);
+      console.error('PostgreSQL code:', error.code);
+      console.error('PostgreSQL detail:', error.detail);
+
+    return res.status(500).json({
+      message: 'Unable to create the user.'
+    });
+  }
+});
+
+app.patch('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, surname, avatar, password } = req.body;
+
+    const cleanName = name?.trim();
+    const cleanSurname = surname?.trim();
+    const cleanAvatar = avatar?.trim();
+
+    const userCheck = await pool.query(
+      'SELECT id FROM users WHERE id = $1',
+      [id]
+    );
+
+    if (userCheck.rows.length === 0) {
+      return res.status(404).json({
+        message: 'User not found.'
+      });
+    }
+
+    if (cleanName === '' || cleanSurname === '') {
+      return res.status(400).json({
+        message: 'Name and surname cannot be empty.'
+      });
+    }
+
+    if (password && password.length < 8) {
+      return res.status(400).json({
+        message: 'The password must contain at least 8 characters.'
+      });
+    }
+
+    if (cleanName && cleanSurname) {
+      const existingUser = await pool.query(
+        `
+          SELECT id
+          FROM users
+          WHERE name = $1 AND surname = $2 AND id <> $3
+        `,
+        [cleanName, cleanSurname, id]
+      );
+
+      if (existingUser.rows.length > 0) {
+        return res.status(409).json({
+          message: 'An account already exists with this name and surname.'
+        });
+      }
+    }
+
+    let newPasswordHash = null;
+    if (password && password.trim() !== '') {
+      newPasswordHash = await bcrypt.hash(password, 12);
+    }
+
+    const updatedUser = await pool.query(
+      `
+        UPDATE users
+        SET
+          name = COALESCE($1, name),
+          surname = COALESCE($2, surname),
+          avatar = COALESCE($3, avatar),
+          password_hash = COALESCE($4, password_hash)
+        WHERE id = $5
+        RETURNING id, name, surname, avatar
+      `,
+      [
+        cleanName || null,
+        cleanSurname || null,
+        cleanAvatar || null,
+        newPasswordHash,
+        id
+      ]
+    );
+
+    return res.status(200).json(updatedUser.rows[0]);
+
+  } catch (error) {
+    console.error('Unable to update user - full error:', error);
     console.error('PostgreSQL message:', error.message);
     console.error('PostgreSQL code:', error.code);
     console.error('PostgreSQL detail:', error.detail);
 
-  return res.status(500).json({
-    message: 'Unable to create the user.'
-  });
-}
+    return res.status(500).json({
+      message: 'Unable to update the user.'
+    });
+  }
 });
 
 app.get('/api/users/:id', async (req, res) => {

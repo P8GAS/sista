@@ -1,0 +1,81 @@
+<div
+  class="modal d-block"
+  tabindex="-1"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="edit-profile-modal-title"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg glassy">
+      <div class="modal-header">
+        <h2 id="edit-profile-modal-title" class="modal-title fs-5 fw-bold">
+          Edit Profile
+        </h2>
+        <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+      </div>
+
+      <form (ngSubmit)="onUpdateProfile()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="name" class="form-label fw-bold">Name</label>
+            <input
+              id="name"
+              type="text"
+              name="name"
+              class="form-control"
+              [(ngModel)]="profileData.name"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="surname" class="form-label fw-bold">Surname</label>
+            <input
+              id="surname"
+              type="text"
+              name="surname"
+              class="form-control"
+              [(ngModel)]="profileData.surname"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label fw-bold">New Password</label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              class="form-control"
+              [(ngModel)]="profileData.password"
+            />
+            <small class="text-muted" style="font-size: 0.8em;">Leave blank to keep current password.</small>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onClose()"
+            [disabled]="isSubmitting"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-glassy-success"
+            [disabled]="isSubmitting"
+          >
+            {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal-backdrop fade show"
+  (click)="onClose()"
+></div>

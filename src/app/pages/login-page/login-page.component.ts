@@ -1,18 +1,18 @@
 import {Component, inject, output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {UserService} from '../../services/user.service';
+import {UserService} from '../../shared/services/user.service';
 import {Router} from '@angular/router';
-import {AuthService} from '../../services/auth.service';
+import {AuthService} from '../../shared/services/auth.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-page',
   imports: [
     FormsModule
   ],
-  templateUrl: './login-modal.component.html',
-  styleUrl: './login-modal.component.css',
+  templateUrl: './login-page.component.html',
+  styleUrl: './login-page.component.css',
 })
-export class LoginModalComponent {
+export class LoginPageComponent {
   private userService: UserService = inject(UserService);
   private authService: AuthService = inject(AuthService);
   private router: Router = inject(Router);
