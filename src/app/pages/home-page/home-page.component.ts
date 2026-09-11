@@ -2,10 +2,10 @@ import {Component, inject, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UserCardComponent} from './components/user-card/user-card.component';
 import {UserService} from '../../shared/services/user.service';
-import {CreateUserPayload, User} from '../../shared/models/user.model';
-import {LoginModalComponent} from './components/login-modal/login-modal.component';
+import {User} from '../../shared/models/user.model';
 import {AddUserModalComponent} from './components/add-user-modal/add-user-modal.component';
 import {NavbarComponent} from '../../shared/components/navbar/navbar.component';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
@@ -13,7 +13,6 @@ import {NavbarComponent} from '../../shared/components/navbar/navbar.component';
     FormsModule,
     ReactiveFormsModule,
     UserCardComponent,
-    LoginModalComponent,
     AddUserModalComponent,
     NavbarComponent
   ],
@@ -27,7 +26,6 @@ export class HomePageComponent implements OnInit {
 
   errorMessage = '';
   isAddUserModalOpen = false;
-  isLoginModalOpen = false;
 
   ngOnInit(): void {
     this.loadUsers();
@@ -49,8 +47,6 @@ export class HomePageComponent implements OnInit {
     this.isAddUserModalOpen = true;
   }
 
-  openLoginModal(): void {
-    this.isLoginModalOpen = true;
-  }
+  goBack(): void {}
 
 }

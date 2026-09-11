@@ -11,14 +11,6 @@
         <h2 id="add-user-modal-title" class="modal-title fs-5 fw-bold">
           Login
         </h2>
-
-        <button
-          type="button"
-          class="btn-close"
-          aria-label="Close"
-          (click)="closeLoginModal()"
-          [disabled]="isSubmitting"
-        ></button>
       </div>
 
       <form (ngSubmit)="onLogin()">
@@ -62,15 +54,6 @@
 
         <div class="modal-footer">
           <button
-            type="button"
-            class="btn btn-glassy-danger"
-            (click)="closeLoginModal()"
-            [disabled]="isSubmitting"
-          >
-            Cancel
-          </button>
-
-          <button
             type="submit"
             class="btn btn-glassy-success"
             [disabled]="isSubmitting"
@@ -85,5 +68,4 @@
 
 <div
   class="modal-backdrop fade show"
-  (click)="closeLoginModal()"
 ></div>

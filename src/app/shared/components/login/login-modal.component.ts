@@ -1,9 +1,11 @@
 import {Component, inject, output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {UserService} from '../../../../shared/services/user.service';
+import {UserService} from '../../services/user.service';
+import {Router} from '@angular/router';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
-  selector: 'app-login-modal',
+  selector: 'app-login',
   imports: [
     FormsModule
   ],
@@ -12,43 +14,35 @@ import {UserService} from '../../../../shared/services/user.service';
 })
 export class LoginModalComponent {
   private userService: UserService = inject(UserService);
+  private authService: AuthService = inject(AuthService);
+  private router: Router = inject(Router);
 
-  closeModal = output<boolean>();
   isSubmitting = false;
-
+  errorMessage = '';
   loginData = {
     name: '',
     surname: '',
     password: ''
   };
 
-  errorMessage = '';
 
   onLogin(): void {
     this.errorMessage = '';
+    this.isSubmitting = true;
 
     this.userService.login(this.loginData).subscribe({
       next: (response) => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem(
-          'connectedUser',
-          JSON.stringify(response.user)
-        );
+        this.authService.login(response.token, response.user);
 
-        console.log('Connected user:', response.user);
-
-        this.closeLoginModal()
+        this.isSubmitting = false;
+        this.router.navigate(['/']);
       },
       error: (error) => {
+        this.isSubmitting = false;
         console.error('Login error:', error);
 
-        this.errorMessage =
-          error.error?.message ?? 'Unable to log in.';
+        this.errorMessage = error.error?.message ?? 'Unable to log in.';
       }
     });
-  }
-
-  closeLoginModal(): void {
-    this.closeModal.emit(false);
   }
 }

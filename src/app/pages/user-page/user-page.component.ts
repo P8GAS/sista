@@ -1,5 +1,5 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../shared/services/user.service';
 import {User} from '../../shared/models/user.model';
 import {GiftService} from '../../shared/services/gift.service';
@@ -22,6 +22,7 @@ import {NavbarComponent} from '../../shared/components/navbar/navbar.component';
 })
 export class UserPageComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  private router: Router = inject(Router);
   private readonly userService = inject(UserService);
   private readonly giftService = inject(GiftService);
 
@@ -119,5 +120,7 @@ export class UserPageComponent implements OnInit, OnDestroy {
     this.transitioningGiftIds = updatedIds;
   }
 
-
+  goBack(): void {
+    this.router.navigate(['/']);
+  }
 }
