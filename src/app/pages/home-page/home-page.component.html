@@ -13,7 +13,7 @@
           <p>No users found.</p>
         }
 
-        <section class="col-12 col-md-7 col-lg-5">
+        <section class="col-12 col-md-7 col-lg-5 user-section">
           <div class="row g-3">
             @for (user of users; track user.id) {
               <div class="col-12 col-sm-6">
@@ -27,260 +27,21 @@
   </div>
 </div>
 
-<div class="container fixed-bottom mb-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-6">
+<app-navbar
+  (leftLink)="openLoginModal()"
+  (middleLink)="openAddUserModal()"
+  (rightLink)="openLoginModal()"
+></app-navbar>
 
-      <nav class="bottom-actions position-relative rounded-pill glassy">
-        <div class="row h-100 align-items-center text-center">
-
-          <div class="col-3"></div>
-          <div class="col-2">
-            <button
-              type="button"
-              class="btn btn-success rounded-pill w-75"
-              aria-label="Connexion"
-              (click)="openLoginModal()"
-            >
-              <i class="bi bi-box-arrow-in-right fs-4"></i>
-            </button>
-          </div>
-
-          <div class="col-2"></div>
-
-          <div class="col-2">
-            <button
-              type="button"
-              class="btn btn-success rounded-pill w-75"
-              aria-label="Profil"
-              (click)="openLoginModal()"
-            >
-              <i class="bi bi-person fs-4"></i>
-            </button>
-          </div>
-          <div class="col-3"></div>
-
-
-        </div>
-
-        <div
-          class="bottom-actions__center position-absolute
-                 top-50 start-50 translate-middle
-                 rounded-circle d-flex align-items-center justify-content-center glassy"
-        >
-          <button
-            type="button"
-            class="btn btn-success rounded-circle
-                   d-flex align-items-center justify-content-center
-                   w-100 h-100 border-0"
-            aria-label="Ajouter un utilisateur"
-            (click)="openUserModal()"
-          >
-            <i class="bi bi-plus-lg text-white"></i>
-          </button>
-        </div>
-
-      </nav>
-
-    </div>
-  </div>
-</div>
-
-@if (isUserModalOpen) {
-  <div
-    class="modal d-block"
-    tabindex="-1"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="add-user-modal-title"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content shadow-lg glassy">
-        <div class="modal-header">
-          <h2 id="add-user-modal-title" class="modal-title fs-5 fw-bold">
-            Add new user
-          </h2>
-
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            (click)="closeUserModal()"
-            [disabled]="isSubmitting"
-          ></button>
-        </div>
-
-        <form (ngSubmit)="addUser()">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="name" class="form-label fw-bold">Name</label>
-              <input
-                id="name"
-                type="text"
-                name="name"
-                class="form-control"
-                [(ngModel)]="newUser.name"
-                required
-              />
-            </div>
-
-            <div class="mb-3">
-              <label for="surname" class="form-label fw-bold">Surname</label>
-              <input
-                id="surname"
-                type="text"
-                name="surname"
-                class="form-control"
-                [(ngModel)]="newUser.surname"
-                required
-              />
-            </div>
-
-            <div class="mb-3">
-              <label for="password" class="form-label fw-bold">Password</label>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                class="form-control"
-                [(ngModel)]="newUser.password"
-                required
-              />
-            </div>
-
-            <div class="mb-3">
-              <label for="avatar" class="form-label fw-bold">
-                Avatar URL <span class="text-body-secondary">(optional)</span>
-              </label>
-
-              <input
-                id="avatar"
-                type="url"
-                name="avatar"
-                class="form-control"
-                [(ngModel)]="newUser.avatar"
-                placeholder="https://example.com/avatar.jpg"
-              />
-            </div>
-          </div>
-
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-glassy-danger"
-              (click)="closeUserModal()"
-              [disabled]="isSubmitting"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              class="btn btn-glassy-success"
-              [disabled]="isSubmitting"
-            >
-              {{ isSubmitting ? 'Adding...' : 'Add user' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="modal-backdrop fade show"
-    (click)="closeUserModal()"
-  ></div>
+@if (isAddUserModalOpen) {
+  <app-add-user-modal
+    (userAdded)="loadUsers()"
+    (closeModal)="isAddUserModalOpen = $event"
+  ></app-add-user-modal>
 }
 
 @if (isLoginModalOpen) {
-  <div
-    class="modal d-block"
-    tabindex="-1"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="add-user-modal-title"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content shadow-lg glassy">
-        <div class="modal-header">
-          <h2 id="add-user-modal-title" class="modal-title fs-5 fw-bold">
-            Login
-          </h2>
-
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            (click)="closeLoginModal()"
-            [disabled]="isSubmitting"
-          ></button>
-        </div>
-
-        <form (ngSubmit)="onLogin()">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="name" class="form-label fw-bold">Name</label>
-              <input
-                id="name"
-                type="text"
-                name="name"
-                class="form-control"
-                [(ngModel)]="loginData.name"
-                required
-              />
-            </div>
-
-            <div class="mb-3">
-              <label for="surname" class="form-label fw-bold">Surname</label>
-              <input
-                id="surname"
-                type="text"
-                name="surname"
-                class="form-control"
-                [(ngModel)]="loginData.surname"
-                required
-              />
-            </div>
-
-            <div class="mb-3">
-              <label for="password" class="form-label fw-bold">Password</label>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                class="form-control"
-                [(ngModel)]="loginData.password"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-glassy-danger"
-              (click)="closeLoginModal()"
-              [disabled]="isSubmitting"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              class="btn btn-glassy-success"
-              [disabled]="isSubmitting"
-            >
-              {{ isSubmitting ? 'Logging...' : 'Login' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="modal-backdrop fade show"
-    (click)="closeLoginModal()"
-  ></div>
+  <app-login-modal
+    (closeModal)="isLoginModalOpen = $event"
+  ></app-login-modal>
 }

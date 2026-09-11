@@ -158,16 +158,8 @@ app.get('/api/users/:userId/gifts', async (req, res) => {
           g.brand,
           g.price,
           g.url,
-          g.photo,
-          COALESCE(
-            json_agg(
-              json_build_object('id', c.id, 'name', c.name)
-            ) FILTER (WHERE c.id IS NOT NULL),
-            '[]'
-          ) AS categories
+          g.photo
         FROM gifts g
-        LEFT JOIN gift_categories gc ON gc.gift_id = g.id
-        LEFT JOIN categories c ON c.id = gc.category_id
         WHERE g.user_id = $1
         GROUP BY g.id
         ORDER BY g.id

@@ -1,0 +1,117 @@
+<div
+  class="modal d-block"
+  tabindex="-1"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="add-user-modal-title"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg glassy">
+      <div class="modal-header">
+        <h2 id="add-user-modal-title" class="modal-title fs-5 fw-bold">
+          Add new gift
+        </h2>
+
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeGiftModal()"
+          [disabled]="isSubmittingGift"
+        ></button>
+      </div>
+
+      <form (ngSubmit)="addGift()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="name" class="form-label fw-bold">Name</label>
+            <input
+              id="name"
+              type="text"
+              name="name"
+              class="form-control"
+              [(ngModel)]="newGift.name"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="brand" class="form-label fw-bold">Brand</label>
+            <input
+              id="brand"
+              type="text"
+              name="brand"
+              class="form-control"
+              [(ngModel)]="newGift.brand"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="price" class="form-label fw-bold">Price</label>
+            <input
+              id="price"
+              type="number"
+              name="price"
+              class="form-control"
+              [(ngModel)]="newGift.price"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="url" class="form-label fw-bold">URL</label>
+            <input
+              id="url"
+              type="text"
+              name="url"
+              class="form-control"
+              [(ngModel)]="newGift.url"
+              placeholder="https://example.com"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="avatar" class="form-label fw-bold">
+              Photo <span class="text-body-secondary">( optional <span class="text-body-tertiary">( but better )</span> )</span>
+            </label>
+
+            <input
+              id="avatar"
+              type="url"
+              name="avatar"
+              class="form-control"
+              [(ngModel)]="newGift.photo"
+              placeholder="https://example.com/photo.jpg"
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-glassy-danger"
+            (click)="closeGiftModal()"
+            [disabled]="isSubmittingGift"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-glassy-success"
+            [disabled]="isSubmittingGift"
+          >
+            {{ isSubmittingGift ? 'Adding...' : 'Add' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal-backdrop fade show"
+  (click)="closeGiftModal()"
+></div>

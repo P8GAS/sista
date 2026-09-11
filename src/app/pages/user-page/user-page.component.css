@@ -2,6 +2,9 @@
   aspect-ratio: 1 / 1;
 }
 
+.gifts-section {
+  margin-bottom: 120px;
+}
 .bottom-actions {
   height: 4.5rem;
 }

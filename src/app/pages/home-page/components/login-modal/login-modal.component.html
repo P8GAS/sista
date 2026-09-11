@@ -1,0 +1,89 @@
+<div
+  class="modal d-block"
+  tabindex="-1"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="add-user-modal-title"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg glassy">
+      <div class="modal-header">
+        <h2 id="add-user-modal-title" class="modal-title fs-5 fw-bold">
+          Login
+        </h2>
+
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeLoginModal()"
+          [disabled]="isSubmitting"
+        ></button>
+      </div>
+
+      <form (ngSubmit)="onLogin()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="name" class="form-label fw-bold">Name</label>
+            <input
+              id="name"
+              type="text"
+              name="name"
+              class="form-control"
+              [(ngModel)]="loginData.name"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="surname" class="form-label fw-bold">Surname</label>
+            <input
+              id="surname"
+              type="text"
+              name="surname"
+              class="form-control"
+              [(ngModel)]="loginData.surname"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label fw-bold">Password</label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              class="form-control"
+              [(ngModel)]="loginData.password"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-glassy-danger"
+            (click)="closeLoginModal()"
+            [disabled]="isSubmitting"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-glassy-success"
+            [disabled]="isSubmitting"
+          >
+            {{ isSubmitting ? 'Logging...' : 'Login' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal-backdrop fade show"
+  (click)="closeLoginModal()"
+></div>
