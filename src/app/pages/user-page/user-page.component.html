@@ -57,6 +57,7 @@
                       [expanded]="expandedGiftId === gift.id"
                       [showImage]="!transitioningGiftIds.has(gift.id)"
                       (toggleExpanded)="toggleGift(gift.id)"
+                      (loadGifts)="loadGifts(userId)"
                     ></app-gift-card>
                   </div>
                 }

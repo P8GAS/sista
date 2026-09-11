@@ -53,23 +53,33 @@
           </a>
         </div>
       } @else {
-        <h2 class="h5 fw-bold mb-0">
+        <h2 class="h5 fw-bold mb-0 mt-auto d-flex align-items-center">
           {{ gift().price }}€
         </h2>
       }
     </div>
 
+    @if(expanded() && routeId != null && +routeId === authService.currentUser()?.id) {
+      <button
+        type="button"
+        class="btn rounded-circle position-absolute bottom-0 end-0 my-3 me-5"
+        (click)="deleteGift(gift().id)"
+      >
+        <i class="bi bi-trash"></i>
+      </button>
+    }
+
     <button
       type="button"
-      class="btn rounded-circle position-absolute bottom-0 end-0 m-3"
+      class="btn rounded-circle position-absolute bottom-0 end-0 my-3 me-2"
       [attr.aria-label]="expanded() ? 'Close gift details' : 'Open gift details'"
       (click)="toggleExpanded.emit()"
     >
-      <i
-        class="bi"
-        [class.bi-chevron-right]="!expanded()"
-        [class.bi-chevron-left]="expanded()"
-      ></i>
+    <i
+      class="bi"
+      [class.bi-chevron-right]="!expanded()"
+      [class.bi-chevron-left]="expanded()"
+    ></i>
     </button>
 
   </div>

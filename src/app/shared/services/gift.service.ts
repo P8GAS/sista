@@ -18,4 +18,10 @@ export class GiftService {
   createGift(userId: string,  gift: CreateGift): Observable<Gift> {
     return this.http.post<Gift>(`${this.apiUrl}/${userId}/gifts`, gift);
   }
+
+  deleteGift(userId: number | undefined, giftId: number) {
+    return this.http.delete(`${this.apiUrl}/${userId}/gifts`, {
+      params: { giftId: giftId.toString() }
+    });
+  }
 }

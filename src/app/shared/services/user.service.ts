@@ -46,9 +46,6 @@ export class UserService {
   }
 
   login(data: LoginData): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(
-      `http://localhost:3000/api/login`,
-      data
-    );
+    return this.http.post<LoginResponse>(`http://localhost:3000/api/login`, data);
   }
 }

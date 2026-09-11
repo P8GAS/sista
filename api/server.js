@@ -312,6 +312,32 @@ app.post('/api/users/:userId/gifts', async (req, res) => {
   }
 });
 
+app.delete('/api/users/:userId/gifts', async (req, res) => {
+  const { userId } = req.params;
+
+  const giftId = req.query.giftId;
+
+  if (!giftId) {
+    return res.status(400).json({ error: "The giftId is required." });
+  }
+
+  try {
+    const result = await pool.query(
+      "DELETE FROM gifts WHERE id = $1 AND user_id = $2 RETURNING id",
+      [giftId, userId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Gift not found or not belonging to this user." });
+    }
+
+    res.status(200).json({ message: "Gift deleted", id: result.rows[0].id });
+  } catch (error) {
+    console.error("Deletion error:", error);
+    res.status(500).json({ error: "Server Error." });
+  }
+});
+
 app.listen(port, () => {
   console.log(`API available on http://localhost:${port}`);
 });

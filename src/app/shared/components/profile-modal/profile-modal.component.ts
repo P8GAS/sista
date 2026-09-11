@@ -15,7 +15,7 @@ export class ProfileModalComponent {
   private authService = inject(AuthService);
   private userService = inject(UserService);
 
-  closeModal = output<void>();
+  closeModal = output<boolean>();
 
   isSubmitting = false;
 
@@ -55,6 +55,6 @@ export class ProfileModalComponent {
   }
 
   onClose(): void {
-    this.closeModal.emit();
+    this.closeModal.emit(false);
   }
 }
