@@ -10,10 +10,25 @@
 .tangerine-bold {
   font-family: "Tangerine", cursive;
   font-weight: 700;
-  font-style: normal;
   font-size: 200px;
+}
+
+.tangerine {
+  font-family: "Tangerine", cursive;
+  font-weight: 300;
+  font-size: 40px;
+  margin-top: -50px;
 }
 
 .sisters {
   object-fit: fill;
+}
+
+.sisters-section {
+  margin-bottom: 120px;
+}
+
+.user-avatar {
+  width: 100%;
+  aspect-ratio: 1 / 1;
 }

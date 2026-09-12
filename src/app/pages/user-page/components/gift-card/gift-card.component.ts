@@ -1,12 +1,15 @@
-import {Component, inject, input, InputSignal, output, OutputEmitterRef} from '@angular/core';
+import {Component, EventEmitter, inject, input, InputSignal, output, OutputEmitterRef} from '@angular/core';
 import { Gift } from '../../../../shared/models/gift.model';
 import {GiftService} from '../../../../shared/services/gift.service';
 import {AuthService} from '../../../../shared/services/auth.service';
 import {ActivatedRoute} from '@angular/router';
+import {EditGiftModalComponent} from '../edit-gift-modal/edit-gift-modal.component';
 
 @Component({
   selector: 'app-gift-card',
-  imports: [],
+  imports: [
+    EditGiftModalComponent
+  ],
   templateUrl: './gift-card.component.html',
   styleUrl: './gift-card.component.css',
 })
@@ -21,6 +24,7 @@ export class GiftCardComponent {
   toggleExpanded: OutputEmitterRef<void> = output<void>();
   loadGifts: OutputEmitterRef<void> = output<void>();
   isCurrentUserPage: boolean = false;
+  isEditGiftModalOpen: boolean = false;
 
   ngOnInit(): void {
     const id: string | null = this.route.snapshot.paramMap.get('id');
@@ -57,5 +61,13 @@ export class GiftCardComponent {
             }
           });
       }
+  }
+
+  openEditGiftModal(): void {
+    this.isEditGiftModalOpen = true;
+  }
+
+  onGiftUpdated(): void {
+    this.loadGifts.emit();
   }
 }

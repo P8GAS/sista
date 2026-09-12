@@ -3,25 +3,18 @@
   tabindex="-1"
   role="dialog"
   aria-modal="true"
-  aria-labelledby="add-user-modal-title"
+  aria-labelledby="edit-profile-modal-title"
 >
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow-lg glassy">
       <div class="modal-header">
-        <h2 id="add-user-modal-title" class="modal-title fs-5 fw-bold">
-          Add new gift
+        <h2 id="edit-profile-modal-title" class="modal-title fs-5 fw-bold">
+          Edit Profile
         </h2>
-
-        <button
-          type="button"
-          class="btn-close"
-          aria-label="Close"
-          (click)="closeGiftModal()"
-          [disabled]="isSubmittingGift"
-        ></button>
+        <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
       </div>
 
-      <form (ngSubmit)="updateGift()">
+      <form (ngSubmit)="onEditGift()">
         <div class="modal-body">
           <div class="mb-3">
             <label for="name" class="form-label fw-bold">Name</label>
@@ -30,7 +23,7 @@
               type="text"
               name="name"
               class="form-control"
-              [(ngModel)]="newGift.name"
+              [(ngModel)]="giftData.name"
               required
             />
           </div>
@@ -42,7 +35,7 @@
               type="text"
               name="brand"
               class="form-control"
-              [(ngModel)]="newGift.brand"
+              [(ngModel)]="giftData.brand"
               required
             />
           </div>
@@ -54,36 +47,35 @@
               type="number"
               name="price"
               class="form-control"
-              [(ngModel)]="newGift.price"
-              required
+              [(ngModel)]="giftData.price"
             />
           </div>
 
           <div class="mb-3">
-            <label for="url" class="form-label fw-bold">URL</label>
-            <input
-              id="url"
-              type="text"
-              name="url"
-              class="form-control"
-              [(ngModel)]="newGift.url"
-              placeholder="https://example.com"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="avatar" class="form-label fw-bold">
-              Photo <span class="text-body-secondary">( optional <span class="text-body-tertiary">( but better )</span> )</span>
+            <label for="photo" class="form-label fw-bold">
+              Photo
             </label>
 
             <input
-              id="avatar"
+              id="photo"
               type="url"
-              name="avatar"
+              name="photo"
               class="form-control"
-              [(ngModel)]="newGift.photo"
-              placeholder="https://example.com/photo.jpg"
+              [(ngModel)]="giftData.photo"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="url" class="form-label fw-bold">
+              URL
+            </label>
+
+            <input
+              id="url"
+              type="url"
+              name="url"
+              class="form-control"
+              [(ngModel)]="giftData.url"
             />
           </div>
         </div>
@@ -91,19 +83,18 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-glassy-danger"
-            (click)="closeGiftModal()"
-            [disabled]="isSubmittingGift"
+            class="btn btn-secondary"
+            (click)="onClose()"
+            [disabled]="isSubmitting"
           >
             Cancel
           </button>
-
           <button
             type="submit"
             class="btn btn-glassy-success"
-            [disabled]="isSubmittingGift"
+            [disabled]="isSubmitting"
           >
-            {{ isSubmittingGift ? 'Adding...' : 'Add' }}
+            {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
           </button>
         </div>
       </form>
@@ -113,5 +104,5 @@
 
 <div
   class="modal-backdrop fade show"
-  (click)="closeGiftModal()"
+  (click)="onClose()"
 ></div>

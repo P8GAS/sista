@@ -1,7 +1,8 @@
-import {Component, inject, output} from '@angular/core';
+import {Component, inject, output, OutputEmitterRef} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {AuthService} from '../../services/auth.service';
+import {User} from '../../models/user.model';
 
 @Component({
   selector: 'app-profile-modal',
@@ -12,21 +13,22 @@ import {AuthService} from '../../services/auth.service';
   styleUrl: './profile-modal.component.css',
 })
 export class ProfileModalComponent {
-  private authService = inject(AuthService);
-  private userService = inject(UserService);
+  private authService: AuthService = inject(AuthService);
+  private userService: UserService = inject(UserService);
 
-  closeModal = output<boolean>();
+  closeModal: OutputEmitterRef<boolean> = output<boolean>();
 
-  isSubmitting = false;
+  isSubmitting: boolean = false;
 
-  profileData = {
+  profileData: {name: string, surname: string, password: string, avatar: string} = {
     name: '',
     surname: '',
-    password: ''
+    password: '',
+    avatar: ''
   };
 
   ngOnInit(): void {
-    const currentUser = this.authService.currentUser();
+    const currentUser: User | null = this.authService.currentUser();
     if (currentUser) {
       this.profileData.name = currentUser.name;
       this.profileData.surname = currentUser.surname;
@@ -35,19 +37,18 @@ export class ProfileModalComponent {
 
   onUpdateProfile(): void {
     this.isSubmitting = true;
-    const userId = this.authService.currentUser()?.id;
+    const userId: number | undefined = this.authService.currentUser()?.id;
 
     if (!userId) return;
 
     this.userService.updateUser(userId as unknown as string, this.profileData).subscribe({
-      next: (updatedUser) => {
-        const currentToken = localStorage.getItem('token') || '';
-        this.authService.login(currentToken, updatedUser);
+      next: (): void => {
+        window.location.reload();
 
         this.isSubmitting = false;
         this.onClose();
       },
-      error: (err) => {
+      error: (err: any): void => {
         console.error('Update failed', err);
         this.isSubmitting = false;
       }

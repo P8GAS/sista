@@ -338,7 +338,7 @@ app.delete('/api/users/:userId/gifts', async (req, res) => {
   }
 });
 
-app.patch('/api/users/:userId/gifts', async (req, res) => {
+app.patch('/api/users/:userId/gifts/reserve', async (req, res) => {
   const { userId } = req.params;
   const giftId = req.query.giftId;
   const { reserved } = req.body;
@@ -369,6 +369,37 @@ app.patch('/api/users/:userId/gifts', async (req, res) => {
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error("Update error:", error);
+    res.status(500).json({ error: "Server Error." });
+  }
+});
+
+app.patch('/api/users/:userId/gifts', async (req, res) => {
+  const { userId } = req.params;
+  const giftId = req.query.giftId;
+  const { name, brand, price, url, photo } = req.body;
+
+  if (!giftId) {
+    return res.status(400).json({ error: "The giftId is required." });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+        UPDATE gifts
+        SET name = $1, brand = $2, price = $3, url = $4, photo = $5
+        WHERE id = $6 AND user_id = $7
+        RETURNING id, name, brand, price, url, photo, reserved
+      `,
+      [name, brand, price, url, photo, giftId, userId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Gift not found or not belonging to this user." });
+    }
+
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error("Update gift error:", error);
     res.status(500).json({ error: "Server Error." });
   }
 });

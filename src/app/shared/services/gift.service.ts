@@ -26,11 +26,27 @@ export class GiftService {
   }
 
   toggleReservation(userId: number | undefined, giftId: number, isReserved: boolean): Observable<Object> {
-    const url = `${this.apiUrl}/${userId}/gifts`;
+    const url = `${this.apiUrl}/${userId}/gifts/reserve`;
 
     return this.http.patch(
       url,
       { reserved: isReserved },
       { params: { giftId: giftId.toString() } }
     );
-  }}
+  }
+
+  editGift(
+    userId: number | undefined,
+    giftId: number,
+    giftData: { name: string; brand: string; price: number; url: string; photo: string }
+  ): Observable<Gift> {
+    const url = `${this.apiUrl}/${userId}/gifts`;
+
+    return this.http.patch<Gift>(
+      url,
+      giftData,
+      { params: { giftId: giftId.toString() } }
+    );
+  }
+}
+
