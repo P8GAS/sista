@@ -42,6 +42,6 @@ export class NavbarComponent {
   }
 
   goToGift(): void {
-    this.router.navigate([`users/${this.authService.currentUser()?.id}`]);
+    this.router.navigate([`/users/${this.authService.currentUser()?.id}`]);
   }
 }

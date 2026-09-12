@@ -6,6 +6,7 @@ export interface Gift {
   url: string;
   photo: string | null;
   userId: number;
+  reserved: boolean;
 }
 
 export interface CreateGift {

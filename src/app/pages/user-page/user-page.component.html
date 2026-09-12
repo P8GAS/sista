@@ -32,15 +32,15 @@
             </div>
           </div>
 
-          <h1 class="text-white">{{ user.name }}</h1>
-          <h2 class="fw-light fst-italic text-white">{{ user.surname }}</h2>
+          <h1 class="fst-italic">{{ user.name }}</h1>
+          <h2 class="fw-light fst-italic">{{ user.surname }}</h2>
         </section>
 
         @if (gifts.length === 0) {
           <h5 class="fst-italic">No gifts yet for this user.</h5>
         } @else {
           <section class="gifts-section mt-5">
-            <h2 class="text-white">Gifts</h2>
+            <h2 class="fst-italic">Gifts</h2>
 
             @if (gifts.length === 0) {
               <h5 class="fst-italic">No gifts yet for this user.</h5>

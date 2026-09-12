@@ -9,6 +9,13 @@
   overflow: hidden;
 }
 
+.reserved-card {
+ filter: grayscale(100%);
+ opacity: 0.75;
+ background-color: #d3d3d3 !important;
+ transition: all 0.3s ease-in-out;
+}
+
 .gift-card .card-body {
   height: 100%;
   overflow: hidden;
@@ -57,3 +64,25 @@
 
   padding-right: 3rem;
 }
+
+.btn-view {
+  background-color: #819a5f;
+  color: white;
+  transition: transform 0.2s ease-in;
+}
+.btn-view:hover {
+  background-color: #b4ba72;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(60, 75, 40, 0.25);
+}
+
+ .btn-reserve {
+   background-color: #9c6bb4;
+   color: white;
+   transition: transform 0.2s ease-in;
+ }
+ .btn-reserve:hover {
+   background-color: #c196c8;
+   transform: translateY(-2px);
+   box-shadow: 0 3px 6px rgba(60, 75, 40, 0.25);
+ }

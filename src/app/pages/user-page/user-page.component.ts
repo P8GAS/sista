@@ -8,6 +8,7 @@ import {GiftCardComponent} from './components/gift-card/gift-card.component';
 import {FormsModule} from '@angular/forms';
 import {AddGiftModalComponent} from './components/add-gift-modal/add-gift-modal.component';
 import {NavbarComponent} from '../../shared/components/navbar/navbar.component';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-user-page',
@@ -40,33 +41,40 @@ export class UserPageComponent implements OnInit, OnDestroy {
 
   userId = '';
 
+  private routeSub?: Subscription;
+
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
+    this.routeSub = this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
 
-    if (!id) {
-      this.errorMessage = 'Invalid ID.';
-      this.isLoading = false;
-      return;
-    }
-
-    this.userId = id;
-
-    this.userService.getUserById(id).subscribe({
-      next: (user) => {
-        this.user = user;
+      if (!id) {
+        this.errorMessage = 'Invalid ID.';
         this.isLoading = false;
-      },
-      error: (error) => {
-        console.error(error);
-        this.errorMessage = 'User not found.';
-        this.isLoading = false;
+        return;
       }
-    });
 
-    this.loadGifts(id);
+      this.userId = id;
+      this.isLoading = true;
+
+      this.userService.getUserById(id).subscribe({
+        next: (user) => {
+          this.user = user;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error(error);
+          this.errorMessage = 'User not found.';
+          this.isLoading = false;
+        }
+      });
+
+      this.loadGifts(id);
+    });
   }
 
   ngOnDestroy(): void {
+    this.routeSub?.unsubscribe();
+
     if (this.giftTransitionTimer) {
       clearTimeout(this.giftTransitionTimer);
     }

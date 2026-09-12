@@ -246,10 +246,10 @@ app.get('/api/users/:userId/gifts', async (req, res) => {
           g.brand,
           g.price,
           g.url,
-          g.photo
+          g.photo,
+          g.reserved
         FROM gifts g
         WHERE g.user_id = $1
-        GROUP BY g.id
         ORDER BY g.id
       `,
       [userId]
@@ -334,6 +334,41 @@ app.delete('/api/users/:userId/gifts', async (req, res) => {
     res.status(200).json({ message: "Gift deleted", id: result.rows[0].id });
   } catch (error) {
     console.error("Deletion error:", error);
+    res.status(500).json({ error: "Server Error." });
+  }
+});
+
+app.patch('/api/users/:userId/gifts', async (req, res) => {
+  const { userId } = req.params;
+  const giftId = req.query.giftId;
+  const { reserved } = req.body;
+
+  if (!giftId) {
+    return res.status(400).json({ error: "The giftId is required." });
+  }
+
+  if (typeof reserved !== 'boolean') {
+    return res.status(400).json({ error: "The 'reserved' value must be a boolean." });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+        UPDATE gifts
+        SET reserved = $1
+        WHERE id = $2 AND user_id = $3
+        RETURNING id, name, reserved
+      `,
+      [reserved, giftId, userId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Gift not found or not belonging to this user." });
+    }
+
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error("Update error:", error);
     res.status(500).json({ error: "Server Error." });
   }
 });
