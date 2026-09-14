@@ -3,8 +3,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UserCardComponent} from './components/user-card/user-card.component';
 import {UserService} from '../../shared/services/user.service';
 import {User} from '../../shared/models/user.model';
-import {AddUserModalComponent} from './components/add-user-modal/add-user-modal.component';
 import {NavbarComponent} from '../../shared/components/navbar/navbar.component';
+import {AuthService} from '../../shared/services/auth.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -13,19 +13,19 @@ import {Router} from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     UserCardComponent,
-    AddUserModalComponent,
-    NavbarComponent
+    NavbarComponent,
   ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
 })
 export class HomePageComponent implements OnInit {
-  private readonly userService = inject(UserService);
+  private readonly userService: UserService = inject(UserService);
+  private readonly authService: AuthService = inject(AuthService);
+  private readonly router: Router = inject(Router);
 
   users: User[] = [];
 
-  errorMessage = '';
-  isAddUserModalOpen = false;
+  errorMessage: string = '';
 
   ngOnInit(): void {
     this.loadUsers();
@@ -33,18 +33,18 @@ export class HomePageComponent implements OnInit {
 
   loadUsers(): void {
     this.userService.getUsers().subscribe({
-      next: (users) => {
+      next: (users: User[]): void => {
         this.users = users;
       },
-      error: (error) => {
+      error: (error: any): void => {
         console.error(error);
         this.errorMessage = 'Cannot get users';
       }
     });
   }
 
-  openAddUserModal(): void {
-    this.isAddUserModalOpen = true;
+  onMiddleClicked(): void {
+    this.router.navigate([`/users/${this.authService.currentUser()?.id}`]);
   }
 
   goBack(): void {}

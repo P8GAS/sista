@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, InputSignal} from '@angular/core';
 import {User} from '../../../../shared/models/user.model';
 import {RouterLink} from '@angular/router';
 
@@ -9,5 +9,5 @@ import {RouterLink} from '@angular/router';
   styleUrl: './user-card.component.css',
 })
 export class UserCardComponent {
-  user = input.required<User>();
+  user: InputSignal<User> = input.required<User>();
 }

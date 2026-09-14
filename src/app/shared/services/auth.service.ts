@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import {Injectable, signal, inject, WritableSignal} from '@angular/core';
 import { Router } from '@angular/router';
 import {User} from '../models/user.model';
 
@@ -6,18 +6,18 @@ import {User} from '../models/user.model';
   providedIn: 'root'
 })
 export class AuthService {
-  private router = inject(Router);
+  private router: Router = inject(Router);
 
-  readonly currentUser = signal<User | null>(null);
+  readonly currentUser: WritableSignal<User | null> = signal<User | null>(null);
 
   constructor() {
     this.loadUserFromStorage();
   }
 
   private loadUserFromStorage(): void {
-    const storedUser = localStorage.getItem('connectedUser');
-    const token = localStorage.getItem('token');
-    const expiry = localStorage.getItem('tokenExpiry');
+    const storedUser: string | null = localStorage.getItem('connectedUser');
+    const token: string | null = localStorage.getItem('token');
+    const expiry: string | null= localStorage.getItem('tokenExpiry');
 
     if (storedUser && token) {
       if (expiry && Date.now() > parseInt(expiry, 10)) {
@@ -39,8 +39,8 @@ export class AuthService {
     localStorage.setItem('token', token);
     localStorage.setItem('connectedUser', JSON.stringify(user));
 
-    const expiresIn = 2 * 60 * 60 * 1000;
-    const expiryDate = Date.now() + expiresIn;
+    const expiresIn: number = 2 * 60 * 60 * 1000;
+    const expiryDate: number = Date.now() + expiresIn;
     localStorage.setItem('tokenExpiry', expiryDate.toString());
 
     this.currentUser.set(user);

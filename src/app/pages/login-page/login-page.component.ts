@@ -1,6 +1,6 @@
-import {Component, inject, output} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {UserService} from '../../shared/services/user.service';
+import {LoginResponse, UserService} from '../../shared/services/user.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../../shared/services/auth.service';
 
@@ -17,9 +17,9 @@ export class LoginPageComponent {
   private authService: AuthService = inject(AuthService);
   private router: Router = inject(Router);
 
-  isSubmitting = false;
-  errorMessage = '';
-  loginData = {
+  isSubmitting: boolean = false;
+  errorMessage: string = '';
+  loginData: {name: string, surname: string, password: string} = {
     name: '',
     surname: '',
     password: ''
@@ -31,13 +31,13 @@ export class LoginPageComponent {
     this.isSubmitting = true;
 
     this.userService.login(this.loginData).subscribe({
-      next: (response) => {
+      next: (response: LoginResponse): void => {
         this.authService.login(response.token, response.user);
 
         this.isSubmitting = false;
         this.router.navigate(['/']);
       },
-      error: (error) => {
+      error: (error: any): void => {
         this.isSubmitting = false;
         console.error('Login error:', error);
 

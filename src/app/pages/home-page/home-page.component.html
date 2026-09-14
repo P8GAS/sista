@@ -47,12 +47,5 @@
 
 <app-navbar
   (leftLink)="goBack()"
-  (middleLink)="openAddUserModal()"
+  (middleLink)="onMiddleClicked()"
 ></app-navbar>
-
-@if (isAddUserModalOpen) {
-  <app-add-user-modal
-    (userAdded)="loadUsers()"
-    (closeModal)="isAddUserModalOpen = $event"
-  ></app-add-user-modal>
-}

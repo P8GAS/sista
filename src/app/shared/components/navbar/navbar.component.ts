@@ -1,4 +1,4 @@
-import {Component, inject, input, output, OutputEmitterRef} from '@angular/core';
+import {Component, inject, output, OutputEmitterRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {ProfileModalComponent} from '../profile-modal/profile-modal.component';
@@ -16,7 +16,6 @@ export class NavbarComponent {
   private authService: AuthService = inject(AuthService);
 
   leftLink: OutputEmitterRef<void> = output<void>();
-  rightLink: OutputEmitterRef<void> = output<void>();
   middleLink: OutputEmitterRef<void> = output<void>();
 
   isProfileOpen: boolean = false;

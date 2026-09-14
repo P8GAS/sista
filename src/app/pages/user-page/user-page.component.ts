@@ -22,30 +22,30 @@ import {Subscription} from 'rxjs';
   styleUrl: './user-page.component.css',
 })
 export class UserPageComponent implements OnInit, OnDestroy {
-  private readonly route = inject(ActivatedRoute);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
-  private readonly userService = inject(UserService);
-  private readonly giftService = inject(GiftService);
+  private readonly userService: UserService = inject(UserService);
+  private readonly giftService: GiftService = inject(GiftService);
 
   user: User | null = null;
   gifts: Gift[] = [];
 
   expandedGiftId: number | null = null;
-  transitioningGiftIds = new Set<number>();
+  transitioningGiftIds: Set<number> = new Set<number>();
 
   private giftTransitionTimer?: ReturnType<typeof setTimeout>;
 
-  errorMessage = '';
-  isLoading = true;
-  isGiftModalOpen = false;
+  errorMessage: string = '';
+  isLoading: boolean = true;
+  isGiftModalOpen: boolean = false;
 
-  userId = '';
+  userId: string = '';
 
   private routeSub?: Subscription;
 
   ngOnInit(): void {
     this.routeSub = this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
+      const id: string | null = params.get('id');
 
       if (!id) {
         this.errorMessage = 'Invalid ID.';
@@ -57,11 +57,11 @@ export class UserPageComponent implements OnInit, OnDestroy {
       this.isLoading = true;
 
       this.userService.getUserById(id).subscribe({
-        next: (user) => {
+        next: (user: User): void => {
           this.user = user;
           this.isLoading = false;
         },
-        error: (error) => {
+        error: (error: any): void => {
           console.error(error);
           this.errorMessage = 'User not found.';
           this.isLoading = false;
@@ -82,10 +82,10 @@ export class UserPageComponent implements OnInit, OnDestroy {
 
   loadGifts(id: string): void {
     this.giftService.getGiftsByUserId(id).subscribe({
-      next: (gifts) => {
+      next: (gifts: Gift[]): void => {
         this.gifts = gifts;
       },
-      error: (error) => {
+      error: (error: any): void => {
         console.error(error);
         this.errorMessage = 'Cannot get gifts';
       }
@@ -97,7 +97,7 @@ export class UserPageComponent implements OnInit, OnDestroy {
   }
 
   toggleGift(giftId: number): void {
-    const previousGiftId = this.expandedGiftId;
+    const previousGiftId: number | null = this.expandedGiftId;
     const idsToHide = new Set<number>(this.transitioningGiftIds);
 
     idsToHide.add(giftId);

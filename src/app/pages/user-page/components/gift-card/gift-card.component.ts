@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, input, InputSignal, output, OutputEmitterRef} from '@angular/core';
+import {Component, inject, input, InputSignal, output, OutputEmitterRef} from '@angular/core';
 import { Gift } from '../../../../shared/models/gift.model';
 import {GiftService} from '../../../../shared/services/gift.service';
 import {AuthService} from '../../../../shared/services/auth.service';

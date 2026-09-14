@@ -1,8 +1,5 @@
 import {Component, inject, input, InputSignal, output, OutputEmitterRef} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {AuthService} from '../../../../shared/services/auth.service';
-import {UserService} from '../../../../shared/services/user.service';
-import {User} from '../../../../shared/models/user.model';
 import {GiftService} from '../../../../shared/services/gift.service';
 import {Gift} from '../../../../shared/models/gift.model';
 
@@ -35,7 +32,7 @@ export class EditGiftModalComponent {
   };
 
   ngOnInit(): void {
-    const current = this.gift();
+    const current: Gift = this.gift();
     if (current) {
       this.giftData = {
         name: current.name,
@@ -51,12 +48,12 @@ export class EditGiftModalComponent {
     this.isSubmitting = true;
 
     this.giftService.editGift(this.userId(), this.gift().id, this.giftData).subscribe({
-      next: (updatedGift: Gift) => {
+      next: (updatedGift: Gift): void => {
         this.isSubmitting = false;
         this.giftUpdated.emit(updatedGift);
         this.onClose();
       },
-      error: (err) => {
+      error: (err: any): void => {
         console.error('Error while editing gift', err);
         this.isSubmitting = false;
       }
