@@ -8,8 +8,8 @@
         <section class="col-12 col-md-5 col-lg-7">
           <div class="glassy rounded-3 mb-3">
             <div class="p-3">
-              <h1 class="tangerine-bold ms-4">Sista</h1>
-              <div class="mx-4">
+              <h1 class="tangerine-bold">Sista</h1>
+              <div class="ms-2">
                 <h3 class="fst-italic tangerine">( Search instrument for selecting terrific acquisitions )</h3>
               </div>
             </div>
@@ -34,7 +34,7 @@
         <section class="col-12 col-md-7 col-lg-5 user-section">
           <div class="row g-3">
             @for (user of users; track user.id) {
-              <div class="col-12 col-sm-6">
+              <div class="col-6 col-sm-6">
                 <app-user-card [user]="user"></app-user-card>
               </div>
             }

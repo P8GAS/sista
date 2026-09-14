@@ -1,5 +1,22 @@
 .bottom-actions {
   height: 4.5rem;
+  gap: clamp(0.5rem, 4vw, 2rem);
+  padding-inline: 1rem;
+}
+
+.bottom-actions .btn {
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottom-actions__spacer {
+  flex: 0 0 auto;
+  width: 6.5rem; /* réserve la place du bouton central absolu */
 }
 
 .bottom-actions__center {
@@ -12,4 +29,73 @@
 
 .bottom-actions__center i {
   font-size: 2.5rem;
+}
+
+.glassy {
+  background-color: #fde5c8;
+}
+
+.goback {
+  background-color: #ffcd5a;
+  border: none;
+  color: black;
+  transition: transform 0.2s ease-in;
+}
+
+.goback:hover {
+  background-color: #f8d186;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.logout {
+  background-color: #819a5f;
+  border: none;
+  color: white;
+  transition: transform 0.2s ease-in;
+}
+
+.logout:hover {
+  background-color: #b4ba72;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.user-page {
+  background-color: #9c6bb4;
+  border: none;
+  color: white;
+  transition: transform 0.2s ease-in;
+}
+
+.user-page:hover {
+  background-color: #c196c8;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.profile {
+  background-color: #71c1c4;
+  border: none;
+  color: black;
+  transition: transform 0.2s ease-in;
+}
+
+.profile:hover {
+  background-color: #aed3cb;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.adding {
+  background-color: #e26b5a;
+  border: none;
+  color: black;
+  transition: transform 0.2s ease-in;
+}
+
+.adding:hover {
+  background-color: #fba085;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
