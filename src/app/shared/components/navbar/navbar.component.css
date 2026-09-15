@@ -32,70 +32,18 @@
 }
 
 .glassy {
-  background-color: #fde5c8;
+  background-color: #ffffff;
 }
 
-.goback {
-  background-color: #ffcd5a;
+.button {
+  background-color: #e4e1da;
   border: none;
   color: black;
   transition: transform 0.2s ease-in;
 }
 
-.goback:hover {
-  background-color: #f8d186;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.logout {
-  background-color: #819a5f;
-  border: none;
-  color: white;
-  transition: transform 0.2s ease-in;
-}
-
-.logout:hover {
-  background-color: #b4ba72;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.user-page {
-  background-color: #9c6bb4;
-  border: none;
-  color: white;
-  transition: transform 0.2s ease-in;
-}
-
-.user-page:hover {
-  background-color: #c196c8;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.profile {
-  background-color: #71c1c4;
-  border: none;
-  color: black;
-  transition: transform 0.2s ease-in;
-}
-
-.profile:hover {
-  background-color: #aed3cb;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.adding {
-  background-color: #e26b5a;
-  border: none;
-  color: black;
-  transition: transform 0.2s ease-in;
-}
-
-.adding:hover {
-  background-color: #fba085;
+.button:hover {
+  background-color: #e4e1da;
   transform: translateY(-2px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }

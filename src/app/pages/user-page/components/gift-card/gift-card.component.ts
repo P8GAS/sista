@@ -28,7 +28,7 @@ export class GiftCardComponent {
 
   ngOnInit(): void {
     const id: string | null = this.route.snapshot.paramMap.get('id');
-    this.isCurrentUserPage = id !== null && +id === this.authService.currentUser()?.id;
+    this.isCurrentUserPage = id !== null && Number(id) === Number(this.authService.currentUser()?.id);
   }
 
   deleteGift(giftId: number): void {

@@ -2,6 +2,7 @@ import {Component, inject, input, InputSignal, output, OutputEmitterRef} from '@
 import {FormsModule} from '@angular/forms';
 import {GiftService} from '../../../../shared/services/gift.service';
 import {Gift} from '../../../../shared/models/gift.model';
+import {AuthService} from '../../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-add-gift-modal',
@@ -13,8 +14,9 @@ import {Gift} from '../../../../shared/models/gift.model';
 })
 export class AddGiftModalComponent {
   private readonly giftService: GiftService = inject(GiftService);
+  private readonly authService: AuthService = inject(AuthService);
 
-  userId: InputSignal<string> = input.required<string>();
+  userId: number | undefined = this.authService.currentUser()?.id;
   closeModal: OutputEmitterRef<boolean> = output<boolean>();
   giftAdded: OutputEmitterRef<void> = output<void>();
 
@@ -45,7 +47,7 @@ export class AddGiftModalComponent {
 
     this.isSubmittingGift = true;
 
-    this.giftService.createGift(this.userId(), {
+    this.giftService.createGift("" + this.userId, {
       name: this.newGift.name.trim(),
       brand: this.newGift.brand.trim(),
       price: this.newGift.price,
