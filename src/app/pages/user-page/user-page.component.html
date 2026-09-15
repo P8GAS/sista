@@ -70,7 +70,6 @@
 
       @if (isGiftModalOpen) {
         <app-add-gift-modal
-          [userId]="userId"
           (closeModal)="isGiftModalOpen = $event"
           (giftAdded)="loadGifts(this.userId)"
         ></app-add-gift-modal>
