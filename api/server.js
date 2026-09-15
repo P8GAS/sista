@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const pool = require('./database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -10,16 +11,40 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'http://localhost:4200'
+  origin: 'http://localhost:4200',
+  credentials: true
 }));
 
 app.use(express.json());
+app.use(cookieParser());
+
+function authenticateToken(req, res, next) {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({
+      message: 'Authentication required.'
+    });
+  }
+
+  try {
+    const user = jwt.verify(token, process.env.JWT);
+
+    req.user = user;
+
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      message: 'Invalid or expired token.'
+    });
+  }
+}
 
 app.get('/api/health', (req, res) => {
   res.json({ message: 'API gifts available.' });
 });
 
-app.get('/api/users', async (req, res) => {
+app.get('/api/users', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT id, name, surname, avatar
@@ -36,7 +61,7 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
-app.post('/api/users', async (req, res) => {
+app.post('/api/users', authenticateToken, async (req, res) => {
   try {
 
     const { name, surname, avatar, password } = req.body;
@@ -117,7 +142,7 @@ app.post('/api/users', async (req, res) => {
   }
 });
 
-app.patch('/api/users/:id', async (req, res) => {
+app.patch('/api/users/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { name, surname, avatar, password } = req.body;
@@ -205,7 +230,7 @@ app.patch('/api/users/:id', async (req, res) => {
   }
 });
 
-app.get('/api/users/:id', async (req, res) => {
+app.get('/api/users/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -234,7 +259,7 @@ app.get('/api/users/:id', async (req, res) => {
   }
 });
 
-app.get('/api/users/:userId/gifts', async (req, res) => {
+app.get('/api/users/:userId/gifts', authenticateToken, async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -264,7 +289,7 @@ app.get('/api/users/:userId/gifts', async (req, res) => {
   }
 });
 
-app.post('/api/users/:userId/gifts', async (req, res) => {
+app.post('/api/users/:userId/gifts', authenticateToken, async (req, res) => {
   const { userId } = req.params;
   const { name, brand, price, url, photo } = req.body;
 
@@ -312,7 +337,7 @@ app.post('/api/users/:userId/gifts', async (req, res) => {
   }
 });
 
-app.delete('/api/users/:userId/gifts', async (req, res) => {
+app.delete('/api/users/:userId/gifts', authenticateToken, async (req, res) => {
   const { userId } = req.params;
 
   const giftId = req.query.giftId;
@@ -338,7 +363,7 @@ app.delete('/api/users/:userId/gifts', async (req, res) => {
   }
 });
 
-app.patch('/api/users/:userId/gifts/reserve', async (req, res) => {
+app.patch('/api/users/:userId/gifts/reserve', authenticateToken, async (req, res) => {
   const { userId } = req.params;
   const giftId = req.query.giftId;
   const { reserved } = req.body;
@@ -373,7 +398,7 @@ app.patch('/api/users/:userId/gifts/reserve', async (req, res) => {
   }
 });
 
-app.patch('/api/users/:userId/gifts', async (req, res) => {
+app.patch('/api/users/:userId/gifts', authenticateToken, async (req, res) => {
   const { userId } = req.params;
   const giftId = req.query.giftId;
   const { name, brand, price, url, photo } = req.body;
@@ -461,8 +486,14 @@ app.post('/api/login', async (req, res) => {
       }
     );
 
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 2 * 60 * 60 * 1000
+    });
+
     return res.json({
-      token,
       user: {
         id: user.id,
         name: user.name,

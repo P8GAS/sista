@@ -12,15 +12,20 @@ export class GiftService {
   constructor(private readonly http: HttpClient) {}
 
   getGiftsByUserId(id: string): Observable<Gift[]> {
-    return this.http.get<Gift[]>(`${this.apiUrl}/${id}/gifts`);
+    return this.http.get<Gift[]>(`${this.apiUrl}/${id}/gifts`, {
+      withCredentials: true
+    });
   }
 
   createGift(userId: string,  gift: CreateGift): Observable<Gift> {
-    return this.http.post<Gift>(`${this.apiUrl}/${userId}/gifts`, gift);
+    return this.http.post<Gift>(`${this.apiUrl}/${userId}/gifts`, gift, {
+      withCredentials: true
+    });
   }
 
   deleteGift(userId: number | undefined, giftId: number): Observable<Object> {
     return this.http.delete(`${this.apiUrl}/${userId}/gifts`, {
+      withCredentials: true,
       params: { giftId: giftId.toString() }
     });
   }
@@ -31,7 +36,7 @@ export class GiftService {
     return this.http.patch(
       url,
       { reserved: isReserved },
-      { params: { giftId: giftId.toString() } }
+      { withCredentials: true, params: { giftId: giftId.toString() } }
     );
   }
 
@@ -45,7 +50,7 @@ export class GiftService {
     return this.http.patch<Gift>(
       url,
       giftData,
-      { params: { giftId: giftId.toString() } }
+      { withCredentials: true, params: { giftId: giftId.toString() } }
     );
   }
 }

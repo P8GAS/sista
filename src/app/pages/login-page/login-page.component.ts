@@ -32,9 +32,15 @@ export class LoginPageComponent {
 
     this.userService.login(this.loginData).subscribe({
       next: (response: LoginResponse): void => {
-        this.authService.login(response.token, response.user);
+        console.log('LOGIN OK', response);
+
+        this.authService.login(response.user);
+
+        console.log('AUTH OK', this.authService.currentUser());
 
         this.isSubmitting = false;
+
+        console.log('NAVIGATION');
         this.router.navigate(['/']);
       },
       error: (error: any): void => {

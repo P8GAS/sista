@@ -17,7 +17,6 @@ export interface ConnectedUser {
 }
 
 export interface LoginResponse {
-  token: string;
   user: ConnectedUser;
 }
 
@@ -30,22 +29,32 @@ export class UserService {
   constructor(private readonly http: HttpClient) {}
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl);
+    return this.http.get<User[]>(this.apiUrl, {
+      withCredentials: true
+    });
   }
 
   createUser(payload: CreateUserPayload): Observable<User> {
-    return this.http.post<User>(this.apiUrl, payload);
+    return this.http.post<User>(this.apiUrl, payload, {
+      withCredentials: true
+    });
   }
 
   updateUser(id: string, payload: CreateUserPayload): Observable<User> {
-    return this.http.patch<User>(`${this.apiUrl}/${id}`, payload);
+    return this.http.patch<User>(`${this.apiUrl}/${id}`, payload, {
+      withCredentials: true
+    });
   }
 
   getUserById(id: string): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/${id}`);
+    return this.http.get<User>(`${this.apiUrl}/${id}`, {
+      withCredentials: true,
+    });
   }
 
   login(data: LoginData): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`http://localhost:3000/api/login`, data);
+    return this.http.post<LoginResponse>(`http://localhost:3000/api/login`, data, {
+      withCredentials: true,
+    });
   }
 }
