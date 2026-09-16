@@ -6,9 +6,21 @@ const cookieParser = require('cookie-parser');
 const pool = require('./database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { rateLimit } = require('express-rate-limit');
+const helmet = require('helmet');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: {
+    message: 'Too many login attempts. Please try again later.'
+  }
+});
 
 app.use(cors({
   origin: 'http://localhost:4200',
@@ -17,6 +29,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(helmet());
 
 function authenticateToken(req, res, next) {
   const token = req.cookies.token;
@@ -433,7 +446,7 @@ app.listen(port, () => {
   console.log(`API available on http://localhost:${port}`);
 });
 
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', loginLimiter, async (req, res) => {
   try {
     const { name, surname, password } = req.body;
 
