@@ -1,0 +1,8 @@
+node_modules
+api/node_modules
+api/.env
+dist
+.angular
+.git
+.gitignore
+README.md
