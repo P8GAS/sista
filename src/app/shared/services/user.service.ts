@@ -24,7 +24,7 @@ export interface LoginResponse {
   providedIn: 'root'
 })
 export class UserService {
-  private readonly apiUrl = 'http://localhost:3000/api/users';
+  private readonly apiUrl = '/api/users';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -53,7 +53,7 @@ export class UserService {
   }
 
   login(data: LoginData): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`http://localhost:3000/api/login`, data, {
+    return this.http.post<LoginResponse>(`/api/login`, data, {
       withCredentials: true,
     });
   }

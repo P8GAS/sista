@@ -7,7 +7,7 @@ import {Gift, CreateGift} from '../models/gift.model';
   providedIn: 'root',
 })
 export class GiftService {
-  private readonly apiUrl = 'http://localhost:3000/api/users';
+  private readonly apiUrl = '/api/users';
 
   constructor(private readonly http: HttpClient) {}
 

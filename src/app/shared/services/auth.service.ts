@@ -1,12 +1,14 @@
 import {Injectable, signal, inject, WritableSignal} from '@angular/core';
 import { Router } from '@angular/router';
 import {User} from '../models/user.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private router: Router = inject(Router);
+  private http: HttpClient = inject(HttpClient);
 
   readonly currentUser: WritableSignal<User | null> = signal<User | null>(null);
 
@@ -22,7 +24,7 @@ export class AuthService {
         this.currentUser.set(JSON.parse(storedUser));
       } catch (error) {
         console.error('Parsing error on the user', error);
-        this.logout();
+        this.clearSession();
       }
     }
   }
@@ -34,8 +36,16 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('connectedUser');
+    this.http.post('/api/logout', {}, {
+      withCredentials: true
+    }).subscribe({
+      next: () => this.clearSession(),
+      error: () => this.clearSession()
+    });
+  }
 
+  private clearSession(): void {
+    localStorage.removeItem('connectedUser');
     this.currentUser.set(null);
     this.router.navigate(['/login']);
   }
