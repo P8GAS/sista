@@ -10,6 +10,12 @@ const { rateLimit } = require('express-rate-limit');
 const helmet = require('helmet');
 
 const app = express();
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
 const port = process.env.PORT || 3000;
 
 const loginLimiter = rateLimit({
@@ -22,10 +28,12 @@ const loginLimiter = rateLimit({
   }
 });
 
-app.use(cors({
-  origin: 'http://localhost:4200',
-  credentials: true
-}));
+if (!isProduction) {
+  app.use(cors({
+    origin: 'http://localhost:4200',
+    credentials: true
+  }));
+}
 
 app.use(express.json());
 app.use(cookieParser());
@@ -501,7 +509,7 @@ app.post('/api/login', loginLimiter, async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: false,
+      secure: isProduction,
       sameSite: 'lax',
       maxAge: 2 * 60 * 60 * 1000
     });
@@ -521,4 +529,14 @@ app.post('/api/login', loginLimiter, async (req, res) => {
       message: 'Unable to log in.'
     });
   }
+});
+
+app.post('/api/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'lax'
+  });
+
+  return res.status(204).end();
 });
