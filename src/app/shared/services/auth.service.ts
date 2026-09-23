@@ -29,6 +29,12 @@ export class AuthService {
     }
   }
 
+  handleUnauthorized(): void {
+    localStorage.removeItem('connectedUser');
+    this.currentUser.set(null);
+    this.router.navigate(['/login']);
+  }
+
   login(user: User): void {
     localStorage.setItem('connectedUser', JSON.stringify(user));
 
